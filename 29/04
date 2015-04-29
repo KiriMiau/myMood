@@ -1,0 +1,124 @@
+// points
+int x1= 125;
+int y1=125;
+int x2= x1*2;
+int y2=y1*2;
+int x3= x1*3;
+int y3=y1*3;
+
+int aktion = 1;
+ 
+ // Aktion 1
+ float breite_start = random(25,200);
+ int geschlecht = int(random(0,2));
+ 
+ // Aktion 2
+ int richtung_laune = int(random(0,2));
+ float xlaune;
+ 
+ // Aktion3
+ int richtung_laune2 = int(random(0,2));
+ float ylaune;
+ 
+  // Akttion 4
+  int zacken_bezier = int(random(0,2));
+    int anzahl = int(random(2,20));
+  float strecke = x3-x1;
+  float einzelstrecke = strecke / anzahl;
+  float startx;
+  float zielx = x3;
+  float bezierabstand = random(-50,50);
+  int i = 0;
+  
+  // Aktion 5
+   int anzahlkreisel = int(random(2,600));
+  float kreiselstrecke = strecke / anzahlkreisel;
+  float kreiseldreher = 1;
+  int k = 0;
+  
+
+void setup(){
+  size(500,500);
+  rectMode(CENTER);
+  noFill();
+  smooth();
+}
+
+void draw(){
+  
+  
+  //1. aktion
+if(aktion == 1){
+  if(geschlecht==1){
+    rect(x2,y2,breite_start,breite_start);
+  } else {
+    ellipse(x2,y2,breite_start,breite_start);
+  }
+  aktion++; // Ende 1
+} else if (aktion==2){
+  
+  
+  //2. aktion
+  if(richtung_laune==1){
+    einzelstrecke = einzelstrecke*(-1);
+    xlaune = x3;
+  } else {
+    zielx = x1;
+    xlaune = x1;
+  }
+  line(x2,y2,xlaune,y2);
+  aktion++; // Ende 2
+} else if (aktion==3){
+  
+  // 3. Aktion
+  if(richtung_laune2==1){
+    ylaune = y3;
+    kreiselstrecke = kreiselstrecke*(-1);
+  } else { 
+    ylaune = y1;
+  }
+  line(xlaune,y2,xlaune,ylaune);
+  aktion++; // Ende 3
+}else if(aktion==4) {
+  
+  
+  //4. aktion 
+  if(i != anzahl) {
+     startx = zielx;
+     zielx = zielx + einzelstrecke;
+     i++;
+     bezierabstand = bezierabstand*(-1);
+
+     if(zacken_bezier==1){
+      line(startx,ylaune + bezierabstand,startx+einzelstrecke,ylaune - bezierabstand);
+           if(i == 1) { // Linie verlängern für zacken
+              line(startx,ylaune,startx,ylaune + bezierabstand);
+           }
+     } else {
+      bezier(startx,ylaune,startx,ylaune + bezierabstand,zielx,ylaune + bezierabstand,zielx,ylaune);
+     }
+  } else { aktion++; } // ende 4
+} else if (aktion == 5) {
+  // Aktion 5
+   if(k != anzahlkreisel) {
+    bezier(zielx,ylaune,zielx+((kreiselstrecke*5)*kreiseldreher),ylaune+(kreiselstrecke*3),zielx+((kreiselstrecke*5)*kreiseldreher),ylaune-(kreiselstrecke*6),zielx,ylaune+kreiselstrecke);
+    ylaune = ylaune+kreiselstrecke;
+    kreiseldreher = kreiseldreher * (-1);
+    k++;
+   } else {  aktion++; }
+}
+
+//Verzögerung
+for (int j = 0; j < 10000; j = j+1) {
+  line(0, 0, 0, 0);
+} // Ende verzögerung
+} // ENDE DRAW
+
+
+String timestamp;
+void keyPressed() {
+  if(key == 's'){
+    timestamp = year()+nf(month(),2)+nf(day(),2)+"-"+nf(hour(),2)+nf(second(),2);
+    saveFrame("Bild-"+timestamp+".jpg");
+  }
+}
